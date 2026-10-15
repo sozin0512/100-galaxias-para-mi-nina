@@ -309,10 +309,62 @@ window.CONFIG = {
     { titulo: "Te Amo",                    artista: "Piso 21 ft. Paulo Londra",                 youtubeId: "nP8ZVJxiJlU" },
     { titulo: "Capaz (Merengueton)",       artista: "Alleh & Yorghaki",                         youtubeId: "cMhT1SqxqHY" },
     { titulo: "LALA",                      artista: "Myke Towers",                              youtubeId: "BVdngsy95mY" },
+    { titulo: "No Es Justo", artista: "J Balvin & Zion y Lennox", youtubeId: "2zn4dAuZ2RU" },
+    { titulo: "Cuando Me Enamoro", artista: "Enrique Iglesias & Juan Luis Guerra", youtubeId: "4DO8GsIYfhQ" },
+    { titulo: "Mi Refe", artista: "Beéle & Ovy On The Drums", youtubeId: "w8l33K5D5CI" },
+    { titulo: "To My Love (Tainy Remix)", artista: "Bomba Estéreo", youtubeId: "THBP1tq49wk" },
     // 💍 La canción marcada con final: true suena SIEMPRE en la última galaxia (la pregunta) y no entra en la rotación de las demás
     { titulo: "KESI",                      artista: "Camilo",                                   youtubeId: "ZrUrwUwSHR0", final: true }
     // ("Eva Luna" = La Medalla de Camilo & Evaluna, ya está arriba)
   ],
+  // 🎵💌 MENSAJES INSPIRADOS EN CADA CANCIÓN (por youtubeId). En cada galaxia sale el mensaje de la canción que suena ahí.
+  mensajesPorCancion: {
+    "THBP1tq49wk": ["To my love, Velkis: esta galaxia es para ti 💌", "Velkis, my love, eres mi ritmo favorito para bailar 💃💖", "Velkis Melissa, to my love con todo mi corazón 💕"],
+    "w8l33K5D5CI": ["Velkis, tú eres mi refe: mi referencia de todo lo bonito 💖", "Cuando pienso en amor, mi refe siempre eres tú, Velkis ✨", "Velkis Melissa, eres mi persona de referencia para ser feliz 😊"],
+    "JdPkgNa9gT0": ["Eres mi religión, Velkis: creo en ti sin pedir pruebas 🙏💖", "Si amarte fuera un credo, yo rezaría tu nombre cada noche, Velkis ✨", "Velkis Melissa, mi fe más bonita tiene tu sonrisa 💫"],
+    "INEbRe0MWf4": ["Velkis, contigo hasta las amapolas florecen más rojas 🌺", "Quiero un campo de amapolas y tú en medio, riéndote 🌸", "Como las amapolas al sol, así me abro cuando te veo, Velkis 🌞"],
+    "o_8HX0TNScc": ["Velkis, cada recuerdo contigo lo guardo en un baúl de oro 🗝️", "En mi baúl de recuerdos, tu risa ocupa el lugar más bonito 📦💖", "Quiero llenar contigo un baúl entero de recuerdos nuevos, Velkis ✨"],
+    "Zn37zIBGv5M": ["Velkis, eres mi reina pepiada: la más rica de todo el menú 👑😋", "Ninguna reina se compara contigo, Velkis Melissa 👑", "Corona puesta, sonrisa lista: así eres tú, mi reina 💕"],
+    "F877bV0Ai3E": ["Encantadora es poco para describirte, Velkis ✨", "Velkis, me encantas de una forma que ni las estrellas entienden 🌟", "Tienes algo encantador que me desarma cada vez 💘"],
+    "7flT6J_1P7Y": ["Te lo prometo, Velkis: siempre voy a cuidar tu corazón 🤞💖", "Te prometo días bonitos y abrazos que curan, Velkis 🤗", "Velkis Melissa, te lo prometo con todas las estrellas de testigo 🌌"],
+    "4O1CNtVG7s8": ["Lo nuestro es un amor de cine, Velkis, y apenas va el tráiler 🎬", "Velkis, contigo cada día parece una escena de película 🍿💕", "Si mi vida fuera una película, tú serías la protagonista 🎥✨"],
+    "tEsAuXQ79AA": ["Velkis, tú eres la medalla que el destino me regaló 🏅💖", "Me gané la medalla de oro el día que te conocí 🥇", "Velkis Melissa, quererte es mi mayor premio 🏆"],
+    "qKp1f7Vn9dM": ["Contigo quiero una vida de rico en amor, Velkis 💸💖", "No necesito lujos: mi riqueza es estar a tu lado 💎", "Velkis, contigo cualquier plan sencillo se siente de millonario 🥂"],
+    "wAjHQXrIj9o": ["Velkis, esos ojitos lindos me tienen perdido 👀💕", "Tus ojitos lindos brillan más que esta galaxia ✨", "Si me miras con esos ojitos, me olvido hasta de mi nombre 🙈"],
+    "VEfkNHTjgs8": ["Velkis, me flechaste directo al corazón 🏹💘", "Tu mirada fue un tiroteo de amor y caí rendido 💥💖", "Velkis Melissa, me rindo: me ganaste con una sonrisa 🏳️💕"],
+    "A9WHpDefTsw": ["Velkis, me tienes loco y no quiero que se me quite 🤪💖", "Loco por ti desde el primer día, Velkis 💫", "Si estar loco es quererte así, que nadie me cure 💕"],
+    "-zgDXIi1uYw": ["Velkis, cara de luna: iluminas hasta mis noches más oscuras 🌕", "Tu carita de luna es mi lámpara favorita 🌙✨", "Velkis Melissa, eres la luna que siempre quiero mirar 🌝"],
+    "2mY7AFTtYwQ": ["Velkis, eres mi favorito de todos mis favoritos 💖", "De todo lo que existe, tú eres mi lugar favorito 🏡", "Mi canción favorita es tu risa, Velkis 🎶"],
+    "5AkDqm-cEgg": ["Velkis, tú eres mi tutú y yo soy tu yo-yo 🥰", "Lo mío es tuyo, Velkis: hasta el corazón 💕", "Velkis Melissa, contigo todo es más dulce y más bonito 🍬"],
+    "AMTAQ-AJS4Y": ["Velkis, andas en mi cabeza todo el día 💭💖", "No sales de mi mente ni un segundo, Velkis 🧠✨", "Andas en mi cabeza y también en cada latido 💓"],
+    "TY0AMEdUHYw": ["Velkis, dulce niña: eres mi canción más bonita 🍭🎶", "Na na na… no hay palabras para lo dulce que eres, Velkis 💕", "Dulce como tú no hay nada en todo el universo 🍯✨"],
+    "YwodhCjFbQ8": ["Contigo todo se siente por primera vez, Velkis 💫", "Velkis, cada día a tu lado parece nuestra primera vez 🌅", "Me haces sentir mariposas como si fuera la primera vez 🦋"],
+    "F5-oCyBQW8k": ["Velkis, tú eres mi primer millón: lo más valioso que tengo 💰💖", "Si gano mi primer millón, te invito a recorrer el mundo ✈️", "No hay millón que valga lo que vale tu abrazo, Velkis 🤗"],
+    "iuTtlb2COtc": ["Velkis, contigo quiero subir hasta Machu Picchu y más allá 🏔️", "Quiero viajar a todos lados contigo, empezando por Machu Picchu 🗺️💖", "Velkis Melissa, a tu lado cualquier cima es posible ⛰️✨"],
+    "tIpzfs5tBJU": ["Velkis, te quiero con todo: con limón y con sal 🍋🧂", "Me encantas tal como eres, con todo y tus manías 💕", "Velkis, contigo hasta lo ácido de la vida sabe rico 🍋✨"],
+    "Qz9gmiLBVFA": ["Velkis, con tacones o en chancletas, eres la más bonita 👠💖", "Cuando caminas, hasta las estrellas se voltean a verte ✨", "Velkis Melissa, eres pura elegancia y ternura juntas 💃"],
+    "jhMiIUb2GEA": ["Velkis, todavía me late fuerte el corazón al pensar en nuestra primera cita ☕💓", "Quiero que cada cita contigo se sienta como la primera 🌹", "Velkis, contigo cualquier salida es mi cita favorita 💕"],
+    "bdOXnTbyk0g": ["Velkis, me muero por darte un beso 😘", "Un beso tuyo vale más que todas estas estrellas 💋✨", "Velkis Melissa, guardo un beso para ti en cada galaxia 💖"],
+    "WZQf4c3F3kA": ["Velkis, eres una obra de arte digna de un museo 🖼️💖", "Si fueras pintura, serías la más visitada del museo 🎨", "Velkis, te miraría por horas como a mi cuadro favorito ✨"],
+    "CFPLIaMpGrY": ["Velkis, me encanta todo de ti: absolutamente todo 💖", "Tu risa, tu voz, tu forma de ser… quiero todo de ti ✨", "Velkis Melissa, de ti me gusta hasta lo que no sabes que me gusta 💕"],
+    "WCisFFHDVOI": ["Velkis, por ti estoy loco de remate 🤪💘", "Me tienes loquito y feliz de estarlo, Velkis 💫", "Que me digan loco, pero loco por ti, Velkis 💖"],
+    "RnpCTcpSwfo": ["Velkis, procura quedarte siempre a mi lado 🤍", "Procura sonreír hoy, que tu sonrisa ilumina mi mundo 😊", "Velkis Melissa, procura no olvidar cuánto te quiero 💕"],
+    "0yr75-gxVtM": ["Velkis, cada día me voy enamorando más de ti 💘", "Me voy enamorando despacito y para siempre, Velkis 💫", "Con cada mensaje tuyo me voy enamorando un poquito más 📱💖"],
+    "spbagny8OjM": ["Velkis, contigo todo me sale con ritmo y alegría 🎶💃", "Tu energía me pone a bailar el corazón, Velkis 💓", "Velkis Melissa, a tu lado la vida tiene mejor sabor 🌴✨"],
+    "0yruvXjYoUo": ["Velkis, te vi y desde entonces no he dejado de pensarte 👀💖", "Te vi una vez y supe que quería verte toda la vida ✨", "El día que te vi, mi universo cambió de color 🌈"],
+    "Oe1fRwgGu5E": ["Velkis, niña bonita, eres mi debilidad 💕", "Niña bonita, tu sonrisa es mi lugar favorito 😊", "Velkis Melissa, la niña más bonita de todas las galaxias 🌌"],
+    "krP539YBF7U": ["Velkis, te quiero millones de veces y un poquito más 💖", "Millones de estrellas y ninguna brilla como tú ✨", "Te daría millones de besos si me dejas, Velkis 😘"],
+    "fAFiHTyCioI": ["Velkis, eres mi constelación de Orión: siempre te encuentro en el cielo 🌌", "Como Orión en la noche, tú brillas y me guías, Velkis ✨", "Velkis Melissa, si miras al cielo, una estrella lleva tu nombre ⭐"],
+    "BFlG5sD540k": ["Velkis, eres más dulce que un caramelo 🍬💖", "Tu voz es puro caramelo para mis oídos, Velkis 🎶", "Velkis Melissa, contigo la vida sabe a caramelo 🍭"],
+    "ghAvJMxE1qo": ["Velkis, un año contigo sería poco: quiero todos 📅💖", "Contaría cada día de un año entero solo para verte ✨", "Velkis Melissa, que este año y los que vienen sean nuestros 🥂"],
+    "IOHh7vkX5O0": ["Velkis, siento que estás hecha pa' mí 🧩💖", "Encajamos como dos piezas hechas la una pa' la otra 💕", "Velkis Melissa, el universo te hizo a la medida de mi corazón ✨"],
+    "HZ8nhGgdZxY": ["Velkis, contigo hasta el corazón baila dembow 💃💓", "Vamos a bailar bajo esta galaxia, Velkis 🎶✨", "Velkis Melissa, mi ritmo favorito es el de tu risa 😊"],
+    "nP8ZVJxiJlU": ["Te amo, Velkis, y quería que lo supiera todo el universo 🌌💖", "Velkis, te amo en todas las galaxias que existen ✨", "Velkis Melissa, dos palabras que no me canso de pensar: te amo 💕"],
+    "cMhT1SqxqHY": ["Velkis, capaz que esta galaxia te saque una sonrisa 😊", "Capaz no lo sabes, pero eres lo mejor de mis días 💖", "Velkis Melissa, contigo soy capaz de todo ✨"],
+    "BVdngsy95mY": ["Velkis, lalalá… contigo hasta tarareo de felicidad 🎶", "Velkis, contigo cualquier canción suena más bonita 🎵💖", "Lalalá, Velkis Melissa: así canta mi corazón cuando te ve 💓"],
+    "2zn4dAuZ2RU": ["Velkis, no es justo lo bonita que eres 😍", "No es justo que me tengas así de enamorado, Velkis 💘", "Velkis Melissa, no es justo que una sola sonrisa me derrita tanto 💕"],
+    "4DO8GsIYfhQ": ["Velkis, cuando me enamoro de ti, me enamoro de verdad 💘", "Cuando me enamoro así, no hay vuelta atrás, Velkis 💖", "Velkis Melissa, me enamoro de ti un poco más cada día ✨"]
+  },
   // Canción de la galaxia demo (?demo=1)
   cancionDemo: { titulo: "KESI", artista: "Camilo", youtubeId: "ZrUrwUwSHR0" },
   // Respaldo si YouTube no carga: link "embed" de una playlist de Spotify, ej. "https://open.spotify.com/embed/playlist/XXXX"
@@ -742,7 +794,12 @@ const MENSAJES_GEN = [
   'Tus ojos tienen más brillo que cualquier estrella 👀✨', 'Contigo quiero todas las aventuras 🚀',
   'Velkis, gracias por cada momento juntos 🤍', 'Ya casi llegas… sigue buscando 💌',
 ];
-const mensajeDe = id => CONFIG.mensajes[id - 1] || MENSAJES_GEN[(id - 1) % MENSAJES_GEN.length];
+const mensajeDe = id => {
+  if (CONFIG.mensajes[id - 1]) return CONFIG.mensajes[id - 1];
+  const rota = CONFIG.playlist.filter(s => s.youtubeId && s.youtubeId !== 'PENDIENTE' && !s.final);
+  if (rota.length) { const c = rota[id % rota.length], k = Math.floor(id / rota.length), m = CONFIG.mensajesPorCancion?.[c.youtubeId]; if (m && m[k]) return m[k]; }
+  return MENSAJES_GEN[(id - 1) % MENSAJES_GEN.length];
+};
 const pistaDe = id => CONFIG.pistas[id - 1] || PISTAS_GEN[id % PISTAS_GEN.length](id + 1);
 const KEY = 'galaxias_progreso_v1';
 let progreso = 0; try { progreso = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) {}
