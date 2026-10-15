@@ -116,7 +116,7 @@
 <div id="nombreCard"><div class="peq">Esta galaxia se llama:</div><div class="gran" id="nombreGal"></div><div class="num" id="nombreNum"></div></div>
 
 <div class="panel" id="pista"><h3 id="pistaTitulo"></h3><p id="pistaMensaje" style="margin-bottom:10px"></p><p id="pistaTexto" style="opacity:.9"></p></div>
-<div class="panel" id="aviso"><h3>Un momentito… 🥺</h3><p id="avisoTexto"></p></div>
+<div class="panel" id="aviso"><h3>Un momentito… 🥺</h3><p id="avisoTexto"></p><div id="claveCaja" style="display:none;margin-top:14px"><input id="claveInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Clave" style="width:140px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.1);color:#fff;font-size:1rem;text-align:center"> <button id="claveBtn" style="padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;font-size:1rem;cursor:pointer">Entrar</button><p id="claveError" style="font-size:.95rem;margin-top:8px;min-height:1.2em"></p></div></div>
 <div class="panel" id="final"><h3 id="finalTitulo"></h3><p id="finalTexto"></p><p id="finalWa" style="margin-top:12px;display:none"><a id="waLink" class="btn" style="display:inline-block;text-decoration:none" target="_blank" rel="noopener">Avisarle 💌</a></p></div>
 <button class="btn" id="btnPreguntar">💌 Tengo algo que preguntarle…</button>
 <div id="boom"><canvas id="boomCanvas"></canvas><div id="boomFlash"></div><div id="boomCaja"><div id="boomTitulo">¡Busque el 100! 💥💖</div><p id="boomPista"></p></div></div>
@@ -267,6 +267,8 @@ window.CONFIG = {
   cansada: { desde: 20, cada: 10, hasta: 90, pregunta: "Velkis, ¿está cansada de buscar? 🥺",
              si: "Sí, un poquito 😴", no: "No, sigo buscando 💪",
              titulo: "¡Atajo secreto! 🚀", mensaje: "Ya buscó muchísimo, así que se ganó saltar directo a la galaxia #99 💖" },
+
+  clave99: "123456789",   // 🔑 clave para abrir la #99 sin haber hecho la secuencia (y desbloquear la #100)
 
   // ❓ PREGUNTA SORPRESA en una galaxia: la pista solo aparece al tocar la respuesta correcta
   quiz: {
@@ -1093,7 +1095,7 @@ const pistaDe = id => CONFIG.pistas[id - 1] || PISTAS_GEN[id % PISTAS_GEN.length
 const KEY = 'galaxias_progreso_v1';
 let progreso = 0; try { progreso = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) {}
 if (qs.has('reiniciar')) { progreso = 0; try { localStorage.removeItem(KEY); } catch (e) {} }
-const bloqueada = CONFIG.ordenEstricto && !DEMO && !qs.has('prueba') && ID > progreso + 1;
+let bloqueada = CONFIG.ordenEstricto && !DEMO && !qs.has('prueba') && ID > progreso + 1;
 if (!bloqueada) { try { localStorage.setItem(KEY, String(Math.max(progreso, ID))); } catch (e) {} }
 
 /* ---------- Música (YouTube embebido; se pide permiso antes) ---------- */
@@ -1138,6 +1140,15 @@ function entrar(conMusica) {
   setTimeout(() => $('nombreCard').classList.add('ver'), 900); setTimeout(() => $('nombreCard').classList.remove('ver'), 5600);
   reloj.start(); animar();
   if (bloqueada) { $('avisoTexto').textContent = `Primero encuentre la galaxia #${progreso + 1} 💫 Esta la espera un poquito más adelante.`;
+    if (QUIZ && CONFIG.clave99) {
+      $('avisoTexto').textContent = 'Las galaxias se encuentran en orden 💫 Primero tiene que encontrar las anteriores, una por una.';
+      $('claveCaja').style.display = 'block';
+      const probar = () => { if ($('claveInput').value.trim() === String(CONFIG.clave99)) {
+          bloqueada = false; try { localStorage.setItem(KEY, String(TOTAL - 1)); } catch (e) {}
+          $('aviso').classList.remove('ver'); $('aviso').style.opacity = 0; $('aviso').style.pointerEvents = 'none'; setTimeout(mostrarQuiz, 600);
+        } else { $('claveError').textContent = 'Clave incorrecta 🙈'; } };
+      $('claveBtn').onclick = probar; $('claveInput').onkeydown = e => { if (e.key === 'Enter') probar(); };
+    }
     setTimeout(() => { $('aviso').classList.add('ver'); $('aviso').style.opacity = 1; }, 2500); return; }
   if (FINAL) setTimeout(() => { $('btnPreguntar').classList.add('ver'); }, CONFIG.segundosParaPregunta * 1000);
   else if (QUIZ) setTimeout(mostrarQuiz, 7000);
