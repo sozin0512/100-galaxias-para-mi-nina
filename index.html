@@ -237,8 +237,10 @@ window.CONFIG = {
            "Mi luz de siempre", "Eres mi hogar", "Mi casualidad favorita", "Mi lugar seguro", "Te elijo",
            "Mi Velkis", "Velkis, mi universo", "Para ti, Velkis"],
 
-  // 💌 MENSAJES: un mensaje por galaxia (mensajes[0] = galaxia #1...). Los que falten salen de una lista genérica.
-  mensajes: [],
+  // 💌 MENSAJES FIJOS por número de galaxia (ej. 99: "..."). Las demás usan los mensajes de su canción.
+  mensajes: {
+    99: "Que sepas que busqué todas y cada una de estas canciones. Espero que te hayan gustado ♥️",
+  },
 
   // 🗺️ PISTAS: la pista de la galaxia N dice dónde está la galaxia N+1.
   // pistas[0] se muestra en la galaxia #1, pistas[1] en la #2, etc.
@@ -466,6 +468,8 @@ window.CONFIG = {
     { titulo: "Tuyo", artista: "Mora", youtubeId: "guXD3jFW9jQ" },
     { titulo: "QLOO*", artista: "Young Cister y Kreamly", youtubeId: "u6Fkx2I2ksI" },
     { titulo: "Perfumito Nuevo", artista: "Bad Bunny ft. RaiNao", youtubeId: "XphyMFdyyEg" },
+    // 🎧 Una canción con soloGalaxia: N suena SOLO en esa galaxia y no entra en la rotación
+    { titulo: "Cómo Se Siente (Remix)", artista: "Jhayco y Bad Bunny", youtubeId: "ZAW9358S9rY", soloGalaxia: 99 },
     // 💍 La canción marcada con final: true suena SIEMPRE en la última galaxia (la pregunta) y no entra en la rotación de las demás
     { titulo: "KESI",                      artista: "Camilo",                                   youtubeId: "ZrUrwUwSHR0", final: true }
     // ("Eva Luna" = La Medalla de Camilo & Evaluna, ya está arriba)
@@ -1002,8 +1006,9 @@ const MENSAJES_GEN = [
   'Velkis, gracias por cada momento juntos 🤍', 'Ya casi llegas… sigue buscando 💌',
 ];
 const mensajeDe = id => {
-  if (CONFIG.mensajes[id - 1]) return CONFIG.mensajes[id - 1];
-  const rota = CONFIG.playlist.filter(s => s.youtubeId && s.youtubeId !== 'PENDIENTE' && !s.final);
+  const MF = CONFIG.mensajes || {}, fijo = Array.isArray(MF) ? MF[id - 1] : MF[id];
+  if (fijo) return fijo;
+  const rota = CONFIG.playlist.filter(s => s.youtubeId && s.youtubeId !== 'PENDIENTE' && !s.final && !s.soloGalaxia);
   if (rota.length) { const c = rota[id % rota.length], k = Math.floor(id / rota.length), m = CONFIG.mensajesPorCancion?.[c.youtubeId]; if (m && m[k]) return m[k]; }
   return MENSAJES_GEN[(id - 1) % MENSAJES_GEN.length];
 };
@@ -1016,10 +1021,11 @@ if (!bloqueada) { try { localStorage.setItem(KEY, String(Math.max(progreso, ID))
 
 /* ---------- Música (YouTube embebido; se pide permiso antes) ---------- */
 const VALIDAS = CONFIG.playlist.filter(s => s.youtubeId && s.youtubeId !== 'PENDIENTE');
-const ROTA = VALIDAS.filter(s => !s.final), CFINAL = VALIDAS.find(s => s.final);
+const ROTA = VALIDAS.filter(s => !s.final && !s.soloGalaxia), CFINAL = VALIDAS.find(s => s.final), CSOLO = VALIDAS.find(s => s.soloGalaxia === ID);
 let LISTA, pista;
 if (DEMO && CONFIG.cancionDemo) { LISTA = [CONFIG.cancionDemo]; pista = 0; }
 else if (FINAL && CFINAL) { LISTA = [CFINAL, ...ROTA]; pista = 0; }   // la pregunta siempre empieza con la canción final
+else if (CSOLO) { LISTA = [CSOLO, ...ROTA]; pista = 0; }   // canción fija de esta galaxia (soloGalaxia)
 else { LISTA = ROTA.length ? ROTA : VALIDAS; pista = LISTA.length ? ID % LISTA.length : 0; }
 let player = null, ytListo = false, quiereMusica = false, fallos = 0;
 const mostrarCancion = () => { const s = LISTA[pista]; $('cancion').textContent = s ? `♪ ${s.titulo} — ${s.artista}` : ''; };
