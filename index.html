@@ -34,7 +34,13 @@
   #progreso{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + clamp(2.1rem,8vw,3.2rem));left:0;right:0;text-align:center;z-index:5;pointer-events:none;
     font-style:italic;font-size:1rem;opacity:0;transition:opacity 2s ease 1.5s;color:rgba(255,255,255,.75)}
   .ver{opacity:1!important}
-  #codigo{position:fixed;left:12px;bottom:max(10px,env(safe-area-inset-bottom));z-index:5;font-size:.8rem;opacity:.4;pointer-events:none;letter-spacing:.05em}
+  #codigo{position:fixed;top:calc(max(16px,env(safe-area-inset-top)) + clamp(2.1rem,8vw,3.2rem) + 1.5rem);left:0;right:0;text-align:center;z-index:5;font-size:.8rem;font-style:italic;pointer-events:none;letter-spacing:.05em;padding:0 10px;opacity:0;transition:opacity 2s ease 1.5s}
+  #codigo.ver{opacity:.5!important}
+  #nombreCard{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(.92);z-index:22;width:min(90vw,520px);text-align:center;pointer-events:none;opacity:0;transition:opacity 1.2s ease,transform 1.6s ease}
+  #nombreCard.ver{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  #nombreCard .peq{font-style:italic;font-size:clamp(1rem,4vw,1.25rem);opacity:.85;letter-spacing:.06em}
+  #nombreCard .gran{font-family:'Great Vibes',cursive;font-size:clamp(2.3rem,10vw,3.8rem);line-height:1.15;margin:8px 0;color:var(--c3);text-shadow:0 0 12px var(--c1),0 0 34px var(--c1)}
+  #nombreCard .num{font-size:.95rem;letter-spacing:.2em;opacity:.7}
   /* Tarjeta pista / pregunta / mensajes */
   .panel{position:fixed;left:50%;bottom:calc(max(165px,env(safe-area-inset-bottom) + 155px));transform:translate(-50%,20px);z-index:20;width:min(92vw,460px);
     padding:18px 20px;border-radius:18px;text-align:center;background:rgba(10,3,14,.72);border:1px solid var(--c1);
@@ -88,6 +94,7 @@
 <div id="titulo"></div>
 <div id="progreso"></div>
 <div id="codigo"></div>
+<div id="nombreCard"><div class="peq">Esta galaxia se llama:</div><div class="gran" id="nombreGal"></div><div class="num" id="nombreNum"></div></div>
 
 <div class="panel" id="pista"><h3 id="pistaTitulo"></h3><p id="pistaMensaje" style="margin-bottom:10px"></p><p id="pistaTexto" style="opacity:.9"></p></div>
 <div class="panel" id="aviso"><h3>Un momentito… 🥺</h3><p id="avisoTexto"></p></div>
@@ -264,7 +271,7 @@ window.CONFIG = {
     { titulo: "Eres Mi Religión",          artista: "Maná & Joy",                               youtubeId: "JdPkgNa9gT0" },
     { titulo: "Amapolas (Remix)",          artista: "Leo Rizzi & Danny Ocean",                  youtubeId: "INEbRe0MWf4" },
     { titulo: "Baúl de los Recuerdos Pt. 1", artista: "Kapo x Yandel",                          youtubeId: "o_8HX0TNScc" },
-    { titulo: "Reina",                     artista: "ROA",                                      youtubeId: "vch3Pr4IMyo" },
+    { titulo: "Reina Pepiada",             artista: "Álvaro Díaz",                              youtubeId: "Zn37zIBGv5M" },
     { titulo: "Encantadora",               artista: "Yandel",                                   youtubeId: "F877bV0Ai3E" },
     { titulo: "Te Lo Prometo",             artista: "HUMBE",                                    youtubeId: "7flT6J_1P7Y" },
     { titulo: "Amor de Cine",              artista: "HUMBE",                                    youtubeId: "4O1CNtVG7s8" },
@@ -293,6 +300,11 @@ window.CONFIG = {
     { titulo: "UWAIE",                     artista: "Kapo",                                     youtubeId: "spbagny8OjM" },
     { titulo: "Te Vi",                     artista: "Piso 21 & Micro TDH",                      youtubeId: "0yruvXjYoUo" },
     { titulo: "Niña Bonita",               artista: "Chino y Nacho",                            youtubeId: "Oe1fRwgGu5E" },
+    { titulo: "Millones",                  artista: "Camilo",                                   youtubeId: "krP539YBF7U" },
+    { titulo: "Orión",                     artista: "Boza & Elena Rose",                        youtubeId: "fAFiHTyCioI" },
+    { titulo: "Caramelo",                  artista: "Ozuna",                                    youtubeId: "BFlG5sD540k" },
+    { titulo: "Un Año",                    artista: "Sebastián Yatra & Reik",                   youtubeId: "ghAvJMxE1qo" },
+    { titulo: "Hecha Pa' Mí",              artista: "Boza",                                     youtubeId: "IOHh7vkX5O0" },
     // 💍 La canción marcada con final: true suena SIEMPRE en la última galaxia (la pregunta) y no entra en la rotación de las demás
     { titulo: "KESI",                      artista: "Camilo",                                   youtubeId: "ZrUrwUwSHR0", final: true }
     // ("Eva Luna" = La Medalla de Camilo & Evaluna, ya está arriba)
@@ -697,7 +709,8 @@ const nombre = (CONFIG.nombre || '').trim();
 const conNombre = s => (nombre ? s.replace(/\{nombre\}/g, nombre) : s.replace(/\{nombre\},?\s*/g, '')).replace(/^(¿?¡?)(\p{Ll})/u, (m, a, b) => a + b.toUpperCase());
 $('titulo').textContent = conNombre(CONFIG.titulo); document.title = `Galaxia #${ID} 💖`;
 $('progreso').textContent = `Galaxia ${ID} de ${TOTAL}`;
-$('codigo').textContent = `Galaxia #${ID} · ${NOMBRE}`;
+$('codigo').textContent = `✨ ${NOMBRE} ✨`;
+$('nombreGal').textContent = `✨ ${NOMBRE} ✨`; $('nombreNum').textContent = `GALAXIA ${ID} DE ${TOTAL}`;
 $('introTexto').textContent = CONFIG.intros?.[ID - 1] ? CONFIG.intros[ID - 1] : nombre ? `${nombre}, ${CONFIG.intro.charAt(0).toLowerCase() + CONFIG.intro.slice(1)}` : CONFIG.intro;
 $('introPermiso').textContent = CONFIG.permisoMusica;
 $('introNum').textContent = `GALAXIA ${ID} DE ${TOTAL}`;
@@ -770,12 +783,13 @@ function entrar(conMusica) {
   if (conMusica) { quiereMusica = true; if (ytListo) player.playVideo(); $('reproductor').classList.add('ver'); }
   else { $('reproductor').classList.add('ver'); $('reproductor').classList.add('mini'); }
   $('intro').classList.add('fuera');
-  $('titulo').classList.add('ver'); $('progreso').classList.add('ver');
+  $('titulo').classList.add('ver'); $('progreso').classList.add('ver'); $('codigo').classList.add('ver');
+  setTimeout(() => $('nombreCard').classList.add('ver'), 900); setTimeout(() => $('nombreCard').classList.remove('ver'), 5600);
   reloj.start(); animar();
   if (bloqueada) { $('avisoTexto').textContent = `Primero encuentra la galaxia #${progreso + 1} 💫 Esta te espera un poquito más adelante.`;
     setTimeout(() => { $('aviso').classList.add('ver'); $('aviso').style.opacity = 1; }, 2500); return; }
   if (FINAL) setTimeout(() => { $('btnPreguntar').classList.add('ver'); }, CONFIG.segundosParaPregunta * 1000);
-  else setTimeout(() => { $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaMensaje').textContent = mensajeDe(ID); $('pistaTexto').textContent = '🗺️ ' + pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }, 5000);
+  else setTimeout(() => { $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaMensaje').textContent = mensajeDe(ID); $('pistaTexto').textContent = '🗺️ ' + pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }, 7000);
 }
 $('btnMusica').onclick = e => { e.stopPropagation(); entrar(true); };
 $('sinMusica').onclick = e => { e.stopPropagation(); entrar(false); };
