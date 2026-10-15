@@ -89,11 +89,11 @@
 <div id="progreso"></div>
 <div id="codigo"></div>
 
-<div class="panel" id="pista"><h3 id="pistaTitulo"></h3><p id="pistaTexto"></p></div>
+<div class="panel" id="pista"><h3 id="pistaTitulo"></h3><p id="pistaMensaje" style="margin-bottom:10px"></p><p id="pistaTexto" style="opacity:.9"></p></div>
 <div class="panel" id="aviso"><h3>Un momentito… 🥺</h3><p id="avisoTexto"></p></div>
 <div class="panel" id="final"><h3 id="finalTitulo"></h3><p id="finalTexto"></p><p id="finalWa" style="margin-top:12px;display:none"><a id="waLink" class="btn" style="display:inline-block;text-decoration:none" target="_blank" rel="noopener">Avisarle 💌</a></p></div>
 <button class="btn" id="btnPreguntar">💌 Tengo algo que preguntarte…</button>
-<div class="panel" id="pregunta"><h2 id="preguntaTexto"></h2><div class="fila"><button class="btn" id="btnSi">Sí 💖</button><button id="btnNo">No</button></div></div>
+<div class="panel" id="pregunta"><p id="preguntaPara" style="font-family:'Great Vibes',cursive;font-size:1.7rem;margin-bottom:8px;opacity:.9"></p><h2 id="preguntaTexto"></h2><div class="fila"><button class="btn" id="btnSi">Sí 💖</button><button id="btnNo">No</button></div></div>
 
 <div id="modal"><div class="caja"><button id="cerrar" aria-label="Cerrar">×</button><div id="carta"></div></div></div>
 
@@ -117,13 +117,18 @@
 window.CONFIG = {
   total: 100,                 // cuántas galaxias tiene la búsqueda del tesoro (la última hace la pregunta)
   ordenEstricto: true,        // true = si abre una galaxia salteada le dice "Primero encuentra la galaxia #X"
-  nombre: "",                 // ✏️ el nombre de ella (o usa ?name=Ana en el link)
+  nombre: "Velkis Melissa",   // cómo se le habla (o usa ?name=... en el link)
+  nombreCompleto: "Velkis Melissa Flores Ulloa",   // sale como "Para ..." en la pregunta final
   de: "Josue",                // quién firma
   titulo: "Mi universo eres tú 💖",            // ?msg= en el link lo cambia
   intro: "Hice esta galaxia solo para ti 💫",
   permisoMusica: "Le puse canciones que te gustan. ¿Me das permiso para ponerlas? 🎶",
   frases: ["Mi universo", "Contigo por siempre", "Eres mi paz", "Mi persona favorita", "Mi cielo",
-           "Mi luz de siempre", "Eres mi hogar", "Mi casualidad favorita", "Mi lugar seguro", "Te elijo"],
+           "Mi luz de siempre", "Eres mi hogar", "Mi casualidad favorita", "Mi lugar seguro", "Te elijo",
+           "Mi Velkis", "Velkis, mi universo", "Para ti, Velkis"],
+
+  // 💌 MENSAJES: un mensaje por galaxia (mensajes[0] = galaxia #1...). Los que falten salen de una lista genérica.
+  mensajes: [],
 
   // 🗺️ PISTAS: la pista de la galaxia N dice dónde está la galaxia N+1.
   // pistas[0] se muestra en la galaxia #1, pistas[1] en la #2, etc.
@@ -136,8 +141,8 @@ window.CONFIG = {
   pregunta: "{nombre}, ¿quieres ser mi novia?",
   textosNo: ["¿Segura? 🥺", "Piénsalo bien…", "¡Ese botón no funciona! 😜", "Inténtalo otra vez 😅", "Mejor el otro 💖", "No te dejo 🙈"],
   segundosParaPregunta: 6,
-  mensajeSi: "¡Sabía que dirías que sí! 💖",
-  detalleSi: "Desde hoy eres oficialmente mi universo entero. Te quiero muchísimo.",
+  mensajeSi: "¡Sabía que dirías que sí, Velkis! 💖",
+  detalleSi: "Velkis Melissa, desde hoy eres oficialmente mi universo entero. Te quiero muchísimo.",
   whatsapp: "",               // ✏️ opcional: tu número con código de país (ej. "50499998888") para que ella te avise
 
   cartas: [
@@ -605,6 +610,19 @@ const PISTAS_GEN = [
   n => `La galaxia #${n} brilla donde guardas tus cosas más bonitas ✨`,
   n => `Sigue tu corazón: la galaxia #${n} está más cerca de lo que crees 💕`,
 ];
+const MENSAJES_GEN = [
+  'Velkis, esta galaxia es solo el comienzo 💫', 'Cada estrella aquí tiene un poquito de tu sonrisa ✨',
+  'Gracias por existir, Velkis 💖', 'Si el universo es infinito, lo que siento por ti también 🌌',
+  'Eres mi casualidad favorita 🍀', 'Contigo hasta los días grises brillan ☀️',
+  'Velkis, eres la luz que siempre busco 🌟', 'Me encanta cómo haces más bonito todo lo que tocas 🌸',
+  'Pienso en ti más veces de las que hay estrellas aquí 💭', 'Tu risa es mi canción favorita 🎶',
+  'Velkis Melissa, contigo todo tiene sentido 💕', 'Eres mi lugar seguro 🏡',
+  'Cada día a tu lado es mi día favorito 📅', 'Mi corazón late más fuerte cuando estás cerca 💓',
+  'Velkis, eres mi persona favorita en todo el universo 🌍', 'Ojalá esta galaxia te saque una sonrisa 😊',
+  'Tus ojos tienen más brillo que cualquier estrella 👀✨', 'Contigo quiero todas las aventuras 🚀',
+  'Velkis, gracias por cada momento juntos 🤍', 'Ya casi llegas… sigue buscando 💌',
+];
+const mensajeDe = id => CONFIG.mensajes[id - 1] || MENSAJES_GEN[(id - 1) % MENSAJES_GEN.length];
 const pistaDe = id => CONFIG.pistas[id - 1] || PISTAS_GEN[id % PISTAS_GEN.length](id + 1);
 const KEY = 'galaxias_progreso_v1';
 let progreso = 0; try { progreso = parseInt(localStorage.getItem(KEY) || '0', 10) || 0; } catch (e) {}
@@ -654,14 +672,14 @@ function entrar(conMusica) {
   if (bloqueada) { $('avisoTexto').textContent = `Primero encuentra la galaxia #${progreso + 1} 💫 Esta te espera un poquito más adelante.`;
     setTimeout(() => { $('aviso').classList.add('ver'); $('aviso').style.opacity = 1; }, 2500); return; }
   if (FINAL) setTimeout(() => { $('btnPreguntar').classList.add('ver'); }, CONFIG.segundosParaPregunta * 1000);
-  else setTimeout(() => { $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaTexto').textContent = pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }, 5000);
+  else setTimeout(() => { $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaMensaje').textContent = mensajeDe(ID); $('pistaTexto').textContent = '🗺️ ' + pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }, 5000);
 }
 $('btnMusica').onclick = e => { e.stopPropagation(); entrar(true); };
 $('sinMusica').onclick = e => { e.stopPropagation(); entrar(false); };
 
 /* ---------- La pregunta (solo en la última galaxia) ---------- */
 let nNo = 0, dijoSi = false, tSi = 0;
-$('btnPreguntar').onclick = () => { $('btnPreguntar').classList.remove('ver'); $('preguntaTexto').textContent = conNombre(CONFIG.pregunta);
+$('btnPreguntar').onclick = () => { $('btnPreguntar').classList.remove('ver'); $('preguntaTexto').textContent = conNombre(CONFIG.pregunta); $('preguntaPara').textContent = CONFIG.nombreCompleto ? `Para ${CONFIG.nombreCompleto}` : '';
   $('pregunta').classList.add('ver'); $('pregunta').style.opacity = 1; };
 function huir(e) {
   if (e) { e.preventDefault(); e.stopPropagation(); }
