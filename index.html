@@ -261,6 +261,13 @@ window.CONFIG = {
   // 💌 MENSAJES FIJOS por número de galaxia (ej. 99: "..."). Las demás usan los mensajes de su canción.
   mensajes: {},
 
+  whatsappTexto: "Sí quiero 💖",   // mensaje que se le escribe a Josue al tocar 'Avisarle 💌' en la #100
+
+  // 😴 ¿ESTÁ CANSADA? En las galaxias 20, 30, ... 90 se le pregunta. Sí = atajo a la #99. No = sigue normal.
+  cansada: { desde: 20, cada: 10, hasta: 90, pregunta: "Velkis, ¿está cansada de buscar? 🥺",
+             si: "Sí, un poquito 😴", no: "No, sigo buscando 💪",
+             titulo: "¡Atajo secreto! 🚀", mensaje: "Ya buscó muchísimo, así que se ganó saltar directo a la galaxia #99 💖" },
+
   // ❓ PREGUNTA SORPRESA en una galaxia: la pista solo aparece al tocar la respuesta correcta
   quiz: {
     99: { pregunta: "¿Qué se siente que le hice todo esto y que la puse a buscar todos los QR?",
@@ -379,7 +386,7 @@ window.CONFIG = {
   segundosParaPregunta: 6,
   mensajeSi: "¡Sabía que diría que sí, Velkis! 💖",
   detalleSi: "Velkis Melissa, desde hoy usted es oficialmente mi universo entero. La quiero muchísimo. Mándeme un mensajito para contarme su respuesta 💌",
-  whatsapp: "",               // ✏️ opcional: tu número con código de país (ej. "50499998888") para que ella te avise
+  whatsapp: "50489333462",               // ✏️ opcional: tu número con código de país (ej. "50499998888") para que ella te avise
 
   cartas: [
     { saludo: "Mi amor,", parrafos: [
@@ -1041,6 +1048,17 @@ const mensajeDe = id => {
 };
 const QUIZ = (CONFIG.quiz || {})[ID];
 function mostrarPista() { $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaMensaje').textContent = mensajeDe(ID); $('pistaTexto').textContent = '🗺️ ' + pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }
+const CZ = CONFIG.cansada, CANSADA = CZ && ID >= CZ.desde && ID <= CZ.hasta && (ID - CZ.desde) % CZ.cada === 0 && ID < TOTAL - 1;
+function mostrarCansada() {
+  $('quizTexto').textContent = CZ.pregunta; $('btnQuizOk').textContent = CZ.si; $('btnQuizNo').textContent = CZ.no; $('quizError').textContent = '';
+  const cerrar = () => { $('quiz').classList.remove('ver'); $('quiz').style.opacity = 0; $('quiz').style.pointerEvents = 'none'; };
+  $('quiz').classList.add('ver'); $('quiz').style.opacity = 1;
+  $('btnQuizNo').onclick = () => { cerrar(); setTimeout(mostrarPista, 500); };
+  $('btnQuizOk').onclick = () => { cerrar();
+    try { localStorage.setItem(KEY, String(Math.max(TOTAL - 2, parseInt(localStorage.getItem(KEY) || '0', 10) || 0))); } catch (e) {}
+    setTimeout(() => { $('pistaTitulo').textContent = CZ.titulo; $('pistaMensaje').textContent = CZ.mensaje; $('pistaTexto').textContent = '🗺️ ' + pistaDe(TOTAL - 2);
+      $('pista').classList.add('ver'); $('pista').style.opacity = 1; }, 500); };
+}
 function mostrarQuiz() {
   $('quizTexto').textContent = QUIZ.pregunta; $('btnQuizOk').textContent = QUIZ.correcta; $('btnQuizNo').textContent = QUIZ.incorrecta;
   $('quiz').classList.add('ver'); $('quiz').style.opacity = 1;
@@ -1123,6 +1141,7 @@ function entrar(conMusica) {
     setTimeout(() => { $('aviso').classList.add('ver'); $('aviso').style.opacity = 1; }, 2500); return; }
   if (FINAL) setTimeout(() => { $('btnPreguntar').classList.add('ver'); }, CONFIG.segundosParaPregunta * 1000);
   else if (QUIZ) setTimeout(mostrarQuiz, 7000);
+  else if (CANSADA) setTimeout(mostrarCansada, 7000);
   else setTimeout(mostrarPista, 7000);
 }
 $('btnMusica').onclick = e => { e.stopPropagation(); entrar(true); };
@@ -1147,7 +1166,7 @@ $('btnSi').onclick = () => {
   $('titulo').textContent = CONFIG.mensajeSi;
   for (let i = 0; i < 6; i++) setTimeout(() => explosion(new THREE.Vector3(mr(-15, 15), mr(-5, 15), mr(-15, 15)), 26, 1.4), i * 450);
   setTimeout(() => { $('finalTitulo').textContent = '💖'; $('finalTexto').textContent = CONFIG.detalleSi + (CONFIG.de ? ` — ${CONFIG.de}` : '');
-    if (CONFIG.whatsapp) { $('waLink').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent('¡Sí! 💖')}`; $('finalWa').style.display = 'block'; }
+    if (CONFIG.whatsapp) { $('waLink').href = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.whatsappTexto || 'Sí quiero 💖')}`; $('finalWa').style.display = 'block'; }
     $('final').classList.add('ver'); $('final').style.opacity = 1; }, 3500);
 };
 
