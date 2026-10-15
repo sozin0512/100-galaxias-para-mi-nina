@@ -58,14 +58,16 @@
   .temblar{animation:temblar .45s}
   @keyframes temblar{0%,100%{translate:0}20%{translate:-10px}40%{translate:10px}60%{translate:-7px}80%{translate:7px}}
   #boom{position:fixed;inset:0;z-index:60;pointer-events:none;display:none}
+  .xCerrar{position:absolute;top:8px;right:10px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(0,0,0,.35);color:#fff;font-size:1.2rem;line-height:1;cursor:pointer;pointer-events:auto;z-index:2}
+  #btnVerPista{position:fixed;left:10px;bottom:max(10px,env(safe-area-inset-bottom));z-index:26;display:none;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(10,5,20,.6);color:#fff;font-size:.95rem;cursor:pointer}
   #boom canvas{position:absolute;inset:0;width:100%;height:100%}
   #boomFlash{position:absolute;inset:0;background:radial-gradient(circle,#fff 0%,var(--c3) 35%,rgba(255,255,255,0) 75%);opacity:0}
   #boom.activo #boomFlash{animation:flash 1.1s ease-out forwards}
   @keyframes flash{0%{opacity:0}8%{opacity:1}100%{opacity:0}}
-  #boomCaja{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%) scale(.6);width:min(92vw,560px);text-align:center;opacity:0;transition:opacity .6s,transform .6s cubic-bezier(.2,1.6,.4,1)}
+  #boomCaja{position:absolute;left:50%;top:46%;padding-top:44px;transform:translate(-50%,-50%) scale(.6);width:min(92vw,560px);text-align:center;opacity:0;transition:opacity .6s,transform .6s cubic-bezier(.2,1.6,.4,1)}
   #boomCaja.ver{opacity:1;transform:translate(-50%,-50%) scale(1)}
   #boomTitulo{font-weight:800;font-size:clamp(2.4rem,11vw,4.6rem);line-height:1.1;color:#fff;text-shadow:0 0 18px var(--c1),0 0 40px var(--c2);margin-bottom:18px}
-  #boomPista{font-style:italic;font-size:clamp(1.1rem,4.4vw,1.4rem);line-height:1.45;background:rgba(10,5,20,.55);border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 18px;backdrop-filter:blur(6px)}
+  #boomPista{position:relative;font-style:italic;font-size:clamp(1.1rem,4.4vw,1.4rem);line-height:1.45;background:rgba(10,5,20,.55);border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 18px;backdrop-filter:blur(6px)}
   .sacudir{animation:sacudir .6s linear 2}
   @keyframes sacudir{0%,100%{transform:translate(0,0)}10%{transform:translate(-12px,6px)}20%{transform:translate(10px,-8px)}30%{transform:translate(-8px,-6px)}40%{transform:translate(8px,8px)}50%{transform:translate(-6px,4px)}60%{transform:translate(6px,-4px)}70%{transform:translate(-4px,4px)}80%{transform:translate(3px,-2px)}90%{transform:translate(-2px,1px)}}
   #pregunta{top:50%;bottom:auto;transform:translate(-50%,-46%);padding:30px 22px}
@@ -89,9 +91,9 @@
   #cancion{font-size:.85rem;font-style:italic;opacity:.75;max-width:200px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   #spotify{width:min(80vw,300px);height:80px;border:0;border-radius:12px;display:none}
   /* Carta */
-  #modal{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .45s}
+  #modal{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(0,0,0,.82);opacity:0;pointer-events:none;transition:opacity .45s}
   #modal.abierto{opacity:1;pointer-events:auto}
-  .caja{position:relative;max-width:440px;width:100%;max-height:80vh;overflow:auto;padding:34px 28px 28px;border-radius:18px;background:rgba(18,4,14,.85);border:1px solid var(--c1);box-shadow:0 0 18px var(--c1)}
+  .caja{position:relative;max-width:440px;width:100%;max-height:80vh;overflow:auto;padding:34px 28px 28px;border-radius:18px;background:rgba(18,4,14,.98);border:1px solid var(--c1);box-shadow:0 0 18px var(--c1)}
   #cerrar{position:absolute;top:10px;right:14px;background:none;border:none;color:rgba(255,255,255,.7);font-size:26px;cursor:pointer}
   #carta h2{font-style:italic;font-weight:500;font-size:1.6rem;margin-bottom:14px;color:var(--c3)}
   #carta p{font-style:italic;font-size:1.15rem;line-height:1.55;margin-bottom:14px}
@@ -115,11 +117,12 @@
 <div id="codigo"></div>
 <div id="nombreCard"><div class="peq">Esta galaxia se llama:</div><div class="gran" id="nombreGal"></div><div class="num" id="nombreNum"></div></div>
 
-<div class="panel" id="pista"><h3 id="pistaTitulo"></h3><p id="pistaMensaje" style="margin-bottom:10px"></p><p id="pistaTexto" style="opacity:.9"></p></div>
+<button id="btnVerPista">🗺️ Ver pista</button>
+<div class="panel" id="pista"><button class="xCerrar" id="pistaX" aria-label="Cerrar">×</button><h3 id="pistaTitulo"></h3><p id="pistaMensaje" style="margin-bottom:10px"></p><p id="pistaTexto" style="opacity:.9"></p></div>
 <div class="panel" id="aviso"><h3>Un momentito… 🥺</h3><p id="avisoTexto"></p><div id="claveCaja" style="display:none;margin-top:14px"><input id="claveInput" type="password" inputmode="numeric" autocomplete="off" placeholder="Clave" style="width:140px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.1);color:#fff;font-size:1rem;text-align:center"> <button id="claveBtn" style="padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.5);background:rgba(255,255,255,.15);color:#fff;font-size:1rem;cursor:pointer">Entrar</button><p id="claveError" style="font-size:.95rem;margin-top:8px;min-height:1.2em"></p></div></div>
 <div class="panel" id="final"><h3 id="finalTitulo"></h3><p id="finalTexto"></p><p id="finalWa" style="margin-top:12px;display:none"><a id="waLink" class="btn" style="display:inline-block;text-decoration:none" target="_blank" rel="noopener">Avisarle 💌</a></p></div>
 <button class="btn" id="btnPreguntar">💌 Tengo algo que preguntarle…</button>
-<div id="boom"><canvas id="boomCanvas"></canvas><div id="boomFlash"></div><div id="boomCaja"><div id="boomTitulo">¡Busque el 100! 💥💖</div><p id="boomPista"></p></div></div>
+<div id="boom"><canvas id="boomCanvas"></canvas><div id="boomFlash"></div><div id="boomCaja" style="pointer-events:auto"><button class="xCerrar" id="boomX" aria-label="Cerrar">×</button><div id="boomTitulo">¡Busque el 100! 💥💖</div><p id="boomPista"></p></div></div>
 <div class="panel" id="quiz"><h2 id="quizTexto"></h2><div class="fila"><button class="btn" id="btnQuizOk"></button><button id="btnQuizNo"></button></div><p id="quizError"></p></div>
 <div class="panel" id="pregunta"><p id="preguntaPara" style="font-family:'Great Vibes',cursive;font-size:1.7rem;margin-bottom:8px;opacity:.9"></p><h2 id="preguntaTexto"></h2><div class="fila"><button class="btn" id="btnSi">Sí 💖</button><button id="btnNo">No</button></div></div>
 
@@ -378,7 +381,7 @@ window.CONFIG = {
     "La alacena de arriba, en lo más alto, guarda la galaxia #97 (pida ayuda si no alcanza 😜)",
     "Cerquita del final: la galaxia #98 está en el bolsillo de su pantalón favorito en el closet 👖",
     "Penúltima pista, Velkis: la galaxia #99 está en la mesa del comedor, en su lugar de siempre 💞",
-    "La última pista: la galaxia #100 está escondida en la sala. Ahí le espera algo muy importante 💍",
+    "La última pista: la galaxia #100 está escondida en la sala. Ahí le espera algo muy importante ✨",
     "Esta es la última galaxia, Velkis Melissa: aquí termina la búsqueda 💖",
   ],
 
@@ -504,7 +507,7 @@ window.CONFIG = {
     { titulo: "Perfumito Nuevo", artista: "Bad Bunny ft. RaiNao", youtubeId: "XphyMFdyyEg" },
     { titulo: "Mamichula", artista: "Trueno, Nicki Nicole y Bizarrap", youtubeId: "NUteQQCMa_k" },
     // 🎧 Una canción con soloGalaxia: N suena SOLO en esa galaxia y no entra en la rotación
-    { titulo: "Cómo Se Siente (Remix)", artista: "Jhayco y Bad Bunny", youtubeId: "ZAW9358S9rY", soloGalaxia: 99 },
+    { titulo: "Cómo Se Siente (Remix)", artista: "Jhayco y Bad Bunny", youtubeId: "ZAW9358S9rY", soloGalaxia: 99, alternativas: ["vyValHTB8nM"] },
     // 💍 La canción marcada con final: true suena SIEMPRE en la última galaxia (la pregunta) y no entra en la rotación de las demás
     { titulo: "KESI",                      artista: "Camilo",                                   youtubeId: "ZrUrwUwSHR0", final: true }
     // ("Eva Luna" = La Medalla de Camilo & Evaluna, ya está arriba)
@@ -1152,25 +1155,33 @@ const mensajeDe = id => {
   return MENSAJES_GEN[(id - 1) % MENSAJES_GEN.length];
 };
 const QUIZ = (CONFIG.quiz || {})[ID];
-function mostrarPista() { $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaMensaje').textContent = mensajeDe(ID); $('pistaTexto').textContent = '🗺️ ' + pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }
+const cerrarCarta = () => $('modal').classList.remove('abierto');
+function ocultarPanelPista() { $('pista').classList.remove('ver'); $('pista').style.opacity = 0; $('pista').style.pointerEvents = 'none'; $('btnVerPista').style.display = 'block'; }
+function verPanelPista() { cerrarCarta(); $('btnVerPista').style.display = 'none'; if (pistaComoBoom) { $('boom').style.display = 'block'; $('boomCaja').classList.add('ver'); return; }
+  $('pista').style.pointerEvents = ''; $('pista').classList.add('ver'); $('pista').style.opacity = 1; }
+let pistaComoBoom = false;
+$('pistaX').onclick = e => { e.stopPropagation(); ocultarPanelPista(); };
+$('boomX').onclick = e => { e.stopPropagation(); $('boomCaja').classList.remove('ver'); setTimeout(() => { $('boom').style.display = 'none'; }, 300); $('btnVerPista').style.display = 'block'; };
+$('btnVerPista').onclick = e => { e.stopPropagation(); verPanelPista(); };
+function mostrarPista() { cerrarCarta(); $('pistaTitulo').textContent = `Pista #${ID}`; $('pistaMensaje').textContent = mensajeDe(ID); $('pistaTexto').textContent = '🗺️ ' + pistaDe(ID); $('pista').classList.add('ver'); $('pista').style.opacity = 1; }
 const CZ = CONFIG.cansada, CANSADA = CZ && ID >= CZ.desde && ID <= CZ.hasta && (ID - CZ.desde) % CZ.cada === 0 && ID < TOTAL - 1;
-function mostrarCansada() {
+function mostrarCansada() { cerrarCarta();
   $('quizTexto').textContent = CZ.pregunta; $('btnQuizOk').textContent = CZ.si; $('btnQuizNo').textContent = CZ.no; $('quizError').textContent = '';
   const cerrar = () => { $('quiz').classList.remove('ver'); $('quiz').style.opacity = 0; $('quiz').style.pointerEvents = 'none'; };
   $('quiz').classList.add('ver'); $('quiz').style.opacity = 1;
   $('btnQuizNo').onclick = () => { cerrar(); setTimeout(mostrarPista, 500); };
   $('btnQuizOk').onclick = () => { cerrar();
     try { localStorage.setItem(KEY, String(Math.max(TOTAL - 2, parseInt(localStorage.getItem(KEY) || '0', 10) || 0))); } catch (e) {}
-    setTimeout(() => { $('pistaTitulo').textContent = CZ.titulo; $('pistaMensaje').textContent = CZ.mensaje; $('pistaTexto').textContent = '🗺️ ' + pistaDe(TOTAL - 2);
+    setTimeout(() => { cerrarCarta(); $('pistaTitulo').textContent = CZ.titulo; $('pistaMensaje').textContent = CZ.mensaje; $('pistaTexto').textContent = '🗺️ ' + pistaDe(TOTAL - 2);
       $('pista').classList.add('ver'); $('pista').style.opacity = 1; }, 500); };
 }
-function mostrarQuiz() {
+function mostrarQuiz() { cerrarCarta();
   $('quizTexto').textContent = QUIZ.pregunta; $('btnQuizOk').textContent = QUIZ.correcta; $('btnQuizNo').textContent = QUIZ.incorrecta;
   $('quiz').classList.add('ver'); $('quiz').style.opacity = 1;
   $('btnQuizNo').onclick = () => { const q = $('quiz'), e = $('quizError'); e.textContent = QUIZ.error; q.classList.remove('temblar'); void q.offsetWidth; q.classList.add('temblar'); };
   $('btnQuizOk').onclick = () => { $('quiz').classList.remove('ver'); $('quiz').style.opacity = 0; $('quiz').style.pointerEvents = 'none'; explosionQuiz(); };
 }
-function explosionQuiz() {
+function explosionQuiz() { cerrarCarta(); pistaComoBoom = true;
   const box = $('boom'), cv = $('boomCanvas'), cx = cv.getContext('2d'), dpr = Math.min(2, devicePixelRatio || 1);
   const W = cv.width = innerWidth * dpr, H = cv.height = innerHeight * dpr;
   box.style.display = 'block'; void box.offsetWidth; box.classList.add('activo');
@@ -1192,7 +1203,7 @@ function explosionQuiz() {
     cx.globalAlpha = 1; cx.globalCompositeOperation = 'source-over';
     if (k < 1) requestAnimationFrame(paso); else cx.clearRect(0, 0, W, H);
   })(t0);
-  setTimeout(() => { $('boomPista').textContent = '🗺️ ' + pistaDe(ID); $('boomCaja').classList.add('ver'); }, 1700);
+  setTimeout(() => { cerrarCarta(); $('boomPista').textContent = '🗺️ ' + pistaDe(ID); $('boomCaja').classList.add('ver'); }, 1700);
 }
 const pistaDe = id => CONFIG.pistas[id - 1] || PISTAS_GEN[id % PISTAS_GEN.length](id + 1);
 const KEY = 'galaxias_progreso_v1';
@@ -1209,7 +1220,8 @@ if (DEMO && CONFIG.cancionDemo) { LISTA = [CONFIG.cancionDemo]; pista = 0; }
 else if (FINAL && CFINAL) { LISTA = [CFINAL, ...ROTA]; pista = 0; }   // la pregunta siempre empieza con la canción final
 else if (CSOLO) { LISTA = [CSOLO, ...ROTA]; pista = 0; }   // canción fija de esta galaxia (soloGalaxia)
 else { LISTA = ROTA.length ? ROTA : VALIDAS; pista = LISTA.length ? ID % LISTA.length : 0; }
-let player = null, ytListo = false, quiereMusica = false, fallos = 0;
+let player = null, ytListo = false, quiereMusica = false, fallos = 0, alt = 0;
+const FIJA = !DEMO && (FINAL && CFINAL || CSOLO) ? 0 : -1;   // índice de la canción fija (#99 / #100): se repite y no salta a otra
 const mostrarCancion = () => { const s = LISTA[pista]; $('cancion').textContent = s ? `♪ ${s.titulo} — ${s.artista}` : ''; };
 window.onYouTubeIframeAPIReady = () => {
   if (!LISTA.length) return;
@@ -1217,13 +1229,15 @@ window.onYouTubeIframeAPIReady = () => {
     playerVars: { playsinline: 1, controls: 0, rel: 0, modestbranding: 1, autoplay: 0 },
     events: {
       onReady: () => { ytListo = true; if (quiereMusica) player.playVideo(); },
-      onStateChange: e => { if (e.data === 0) siguiente(1); if (e.data === 1) { fallos = 0; $('btnPlay').textContent = '⏸'; } if (e.data === 2) $('btnPlay').textContent = '▶'; },
-      onError: () => { if (++fallos < LISTA.length) siguiente(1); else respaldoSpotify(); }
+      onStateChange: e => { if (e.data === 0) { if (pista === FIJA) { player.seekTo(0); player.playVideo(); } else siguiente(1); } if (e.data === 1) { fallos = 0; $('btnPlay').textContent = '⏸'; } if (e.data === 2) $('btnPlay').textContent = '▶'; },
+      onError: () => { const s = LISTA[pista], a = s.alternativas || [];
+        if (alt < a.length) { player.loadVideoById(a[alt++]); return; }   // probar otra subida oficial de la misma canción
+        alt = 0; if (++fallos < LISTA.length) siguiente(1); else respaldoSpotify(); }
     } });
 };
 function cargarYT() { const s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; s.onerror = respaldoSpotify; document.head.appendChild(s); }
 function respaldoSpotify() { if (!CONFIG.spotifyEmbed) return; $('yt').style.display = 'none'; const f = $('spotify'); f.src = CONFIG.spotifyEmbed; f.style.display = 'block'; }
-function siguiente(d) { if (!player || !ytListo || !LISTA.length) return; pista = (pista + d + LISTA.length) % LISTA.length; player.loadVideoById(LISTA[pista].youtubeId); mostrarCancion(); }
+function siguiente(d) { if (!player || !ytListo || !LISTA.length) return; alt = 0; pista = (pista + d + LISTA.length) % LISTA.length; player.loadVideoById(LISTA[pista].youtubeId); mostrarCancion(); }
 mostrarCancion(); cargarYT();
 setTimeout(() => { if (!ytListo) respaldoSpotify(); }, 9000);
 $('btnNext').onclick = () => siguiente(1);
