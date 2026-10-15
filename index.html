@@ -6,7 +6,7 @@
 <title>Galaxia 💖</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@700;800&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <style>
   :root{--c1:#ff4f9a;--c2:#b53cff;--c3:#fff2f8;--bg:#1a0610}
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
@@ -1029,17 +1029,17 @@ for (let i = 0; i < (movil ? 30 : 45); i++) {
   s.userData = { v: rnd(0.6, 1.6), f: R() * 6.28 }; subiendo.push(s); scene.add(s);
 }
 function spriteTexto(texto, color) {
-  const fs = 110, c = document.createElement('canvas'), x = c.getContext('2d'), fuente = `${fs}px "Great Vibes", cursive`;
+  const fs = 110, c = document.createElement('canvas'), x = c.getContext('2d'), fuente = `700 ${fs * 0.72 | 0}px "Cormorant Garamond", Georgia, serif`;
   x.font = fuente; const w = Math.ceil(x.measureText(texto).width) + 80; c.width = w; c.height = fs * 1.7;
-  x.font = fuente; x.textAlign = 'center'; x.textBaseline = 'middle'; x.shadowColor = color; x.shadowBlur = 14; x.fillStyle = color;
-  x.fillText(texto, w / 2, c.height / 2); x.shadowBlur = 0; x.fillStyle = '#fff'; x.globalAlpha = 0.35; x.fillText(texto, w / 2, c.height / 2);
+  x.font = fuente; x.textAlign = 'center'; x.textBaseline = 'middle'; x.shadowColor = 'rgba(0,0,0,.85)'; x.shadowBlur = 10; x.fillStyle = color;
+  x.fillText(texto, w / 2, c.height / 2); x.shadowBlur = 0; x.fillText(texto, w / 2, c.height / 2);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false, opacity: 0.85 }));
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, transparent: true, depthWrite: false, opacity: 0.6 }));
   s.scale.set(2.1 * w / c.height, 2.1, 1); return s;
 }
 const frases = [];
 const misFrases = CONFIG.frases.slice().sort(() => R() - 0.5).slice(0, 6 + (R() * 4 | 0));
-Promise.race([document.fonts.load('110px "Great Vibes"'), new Promise(r => setTimeout(r, 2500))]).then(() => {
+Promise.race([document.fonts.load('700 80px "Cormorant Garamond"'), new Promise(r => setTimeout(r, 2500))]).then(() => {
   misFrases.forEach((txt, i) => { const s = spriteTexto(txt, mpick([PAL[0], PAL[1], PAL[3], '#ffffff']));
     const a = i / misFrases.length * 6.283, r = i % 2 ? 22 : 14; s.position.set(Math.cos(a) * r, 2 + (i % 3) * 2, Math.sin(a) * r);
     s.userData = { y0: s.position.y, f: i }; scene.add(s); frases.push(s); });
@@ -1246,6 +1246,86 @@ $('btnPlay').onclick = () => { if (!ytListo) return; player.getPlayerState() ===
 $('btnMute').onclick = () => { if (!ytListo) return; if (player.isMuted()) { player.unMute(); $('btnMute').textContent = '🔊'; } else { player.mute(); $('btnMute').textContent = '🔇'; } };
 $('btnMini').onclick = () => { $('reproductor').classList.toggle('mini'); };
 
+
+/* ---------- 🎤 Concierto: frases formadas con estrellas (no son letras de canciones) ---------- */
+const CON = (() => {
+  if (DEMO || qs.has('sinconcierto')) return null;
+  const N = 2500, D = 30;                       // partículas máx. y distancia a la cámara
+  const cancion = LISTA[pista] || {}, limpia = x => x.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}]/gu, '').replace(/\s+/g, ' ').trim();
+  const sinNombre = x => limpia(x).replace(/^(Velkis Melissa|Velkis),\s*/i, '').replace(/,\s*(Velkis Melissa|Velkis)\b/gi, '').replace(/^\p{Ll}/u, c => c.toUpperCase());
+  const lineas = txt => { const out = []; let l = ''; for (const w of txt.split(' ')) { if ((l + ' ' + w).trim().length > 22 && l) { out.push(l); l = w; } else l = (l + ' ' + w).trim(); } if (l) out.push(l); return out; };
+  const crudas = ['Velkis Melissa', cancion.titulo || '', ...(CONFIG.frases || []).filter(f => !f.startsWith('♪')),
+    ...((CONFIG.mensajesPorCancion || {})[cancion.youtubeId] || []).map(sinNombre)].map(limpia).filter(Boolean);
+  const dos = t => { const w = t.split(' '); let best = null;                  // 1 o 2 líneas equilibradas (≤ 22-24 c.)
+    if (t.length <= 22) return [t];
+    for (let i = 1; i < w.length; i++) { const a = w.slice(0, i).join(' '), b = w.slice(i).join(' '), m = Math.max(a.length, b.length); if (m <= 24 && (!best || m < best[0])) best = [m, [a, b]]; }
+    return best && best[1]; };
+  const trozos = t => { const d = dos(t); if (d) return [d];
+    for (const re of [/(?<=[:;.…])\s+/, /(?<=[:;,.…])\s+/]) { const p = t.split(re); if (p.length < 2) continue; let acc = [], cur = '';
+      for (const x of p) { const j = (cur + ' ' + x).trim(); if (cur && (cur.length < 12 || x.length < 12) && dos(j)) cur = j; else { if (cur) acc.push(cur); cur = x; } } if (cur) acc.push(cur); if (acc.every(dos)) return acc.map(dos); }
+    const w = t.split(' '), k = Math.ceil(t.length / 44), per = Math.ceil(w.length / k), out = []; for (let i = 0; i < w.length; i += per) out.push(dos(w.slice(i, i + per).join(' ')) || lineas(w.slice(i, i + per).join(' ')).slice(0, 2)); return out; };
+  const FR = []; for (const c of crudas) FR.push(...trozos(c.replace(/[:;,]$/, '')).map(l => l.map(x => x.replace(/[:;,]$/, ''))));
+  const geo = new THREE.BufferGeometry(), pos = new Float32Array(N * 3), from = new Float32Array(N * 3), to = new Float32Array(N * 3), seed = new Float32Array(N);
+  const home = () => { const a = Math.random() * 6.283, r = 18 + Math.random() * 40; return [Math.cos(a) * r, (Math.random() - 0.5) * 30, -D - 20 - Math.random() * 60]; };
+  for (let i = 0; i < N; i++) { const h = home(); pos.set(h, i * 3); from.set(h, i * 3); to.set(h, i * 3); seed[i] = Math.random(); }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3)); geo.setAttribute('aSeed', new THREE.BufferAttribute(seed, 1));
+  const mat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, depthTest: false, blending: THREE.NormalBlending,
+    uniforms: { uT: { value: 0 }, uOp: { value: 0 }, uPulse: { value: 0 }, uSize: { value: (movil ? 1.5 : 1.9) * renderer.getPixelRatio() }, uC1: { value: new THREE.Color(PAL[0]) }, uC2: { value: new THREE.Color(PAL[3] || PAL[1]) } },
+    vertexShader: `attribute float aSeed; uniform float uT, uSize, uPulse; varying float vS; void main(){ vS = aSeed; vec4 mv = modelViewMatrix * vec4(position,1.); gl_Position = projectionMatrix * mv;
+      float tw = 0.85 + 0.15 * sin(uT * (3. + aSeed * 5.) + aSeed * 40.); gl_PointSize = uSize * tw * (1. + uPulse * 0.15) * (30. / -mv.z); }`,
+    fragmentShader: `uniform float uOp; uniform vec3 uC1, uC2; varying float vS; void main(){ float d = length(gl_PointCoord - .5); if (d > .5) discard;
+      float a = smoothstep(.5, .32, d); gl_FragColor = vec4(mix(vec3(1.), mix(uC1, uC2, vS), .35) * .92, a * uOp); }` });
+  const pts = new THREE.Points(geo, mat); pts.frustumCulled = false; pts.renderOrder = 999;
+  const sc = document.createElement('canvas'); sc.width = sc.height = 128; { const g = sc.getContext('2d'), r = g.createRadialGradient(64, 64, 8, 64, 64, 64);
+    r.addColorStop(0, 'rgba(0,0,0,.8)'); r.addColorStop(.6, 'rgba(0,0,0,.5)'); r.addColorStop(1, 'rgba(0,0,0,0)'); g.fillStyle = r; g.fillRect(0, 0, 128, 128); }
+  const sombra = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(sc), transparent: true, depthWrite: false, depthTest: false, opacity: 0 }));
+  sombra.renderOrder = 998; sombra.position.z = -D - 0.5;
+  const grupo = new THREE.Group(); grupo.add(sombra, pts); camera.add(grupo); scene.add(camera);
+  const cv = document.createElement('canvas'), cx = cv.getContext('2d', { willReadFrequently: true }); cv.width = 520; cv.height = 200;
+  const FUENTE = fs => `700 ${fs}px Montserrat, "Arial Black", Arial, sans-serif`;
+  function muestrear(ls) {                                       // texto → puntos (en el espacio de la cámara)
+    cx.clearRect(0, 0, cv.width, cv.height); cx.fillStyle = '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    let fs = 70; cx.font = FUENTE(fs);
+    const w = Math.max(...ls.map(l => cx.measureText(l).width)); fs = Math.max(20, Math.min(ls.length > 1 ? 66 : 84, Math.floor(fs * (cv.width - 16) / w)));
+    cx.font = FUENTE(fs);
+    ls.forEach((l, i) => cx.fillText(l, cv.width / 2, cv.height / 2 + (i - (ls.length - 1) / 2) * fs * 1.12));
+    const d = cx.getImageData(0, 0, cv.width, cv.height).data, P = []; let x0 = 1e9, x1 = -1, y0 = 1e9, y1 = -1;
+    for (let y = 0; y < cv.height; y++) for (let x = 0; x < cv.width; x++) if (d[(y * cv.width + x) * 4 + 3] > 140) { P.push(x, y); if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    const n = P.length / 2; if (!n) return;
+    const visH = 2 * D * Math.tan(camera.fov * Math.PI / 360), visW = visH * camera.aspect, bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+    const esc = Math.min(visW * 0.85 / bw, visH * (ls.length > 1 ? 0.15 : 0.1) / bh);   // siempre dentro del 85 % del ancho
+    const cy = visH * (0.5 - (movil ? 0.31 : 0.33)), mx = (x0 + x1) / 2, my = (y0 + y1) / 2;   // franja entre el título y el panel de la pista
+    for (let i = 0; i < N; i++) { const k = (i < n ? Math.floor(i * n / Math.min(n, N)) : Math.floor(Math.random() * n)) % n;
+      to[i * 3] = (P[k * 2] - mx + Math.random() - 0.5) * esc; to[i * 3 + 1] = -(P[k * 2 + 1] - my + Math.random() - 0.5) * esc + cy; to[i * 3 + 2] = -D; }
+    if (n > N) { const idx = new Uint32Array(n); for (let i = 0; i < n; i++) idx[i] = i; for (let i = 0; i < N; i++) { const j = i + (Math.random() * (n - i) | 0), t = idx[i]; idx[i] = idx[j]; idx[j] = t; const k = idx[i];
+      to[i * 3] = (P[k * 2] - mx + Math.random() * 0.6 - 0.3) * esc; to[i * 3 + 1] = -(P[k * 2 + 1] - my + Math.random() * 0.6 - 0.3) * esc + cy; } }
+    sombra.position.set(0, cy, -D - 0.5); sombra.scale.set(bw * esc * 1.35 + 2, bh * esc * 1.9 + 1.5, 1);
+  }
+  const IN = 1.0, HOLD = 3.4, OUT = 0.9, BEAT = 0.5;              // ~5,3 s por frase; pulso cada 0,5 s (120 bpm)
+  let fase = 'off', tf = 0, idx = 0, op = 0, activo = false, kf = 0;
+  const tapado = () => { const v = id => $(id)?.classList.contains('ver'); return !$('intro').classList.contains('fuera') || $('modal').classList.contains('abierto') || v('quiz') || v('pregunta') || v('aviso') || v('final') || v('nombreCard') || getComputedStyle($('boom')).display !== 'none' || dijoSi; };
+  const ease = k => k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+  function nueva() { for (let i = 0; i < N * 3; i++) from[i] = pos[i]; muestrear(FR[idx % FR.length]); idx++; fase = 'in'; tf = 0; }
+  function dispersar() { for (let i = 0; i < N; i++) { from.set([pos[i * 3], pos[i * 3 + 1], pos[i * 3 + 2]], i * 3); to.set(home(), i * 3); } fase = 'out'; tf = 0; }
+  window.__concierto = { frases: FR, estado: () => ({ fase, op: +op.toFixed(2), frase: FR[(idx - 1 + FR.length) % FR.length]?.join(' / ') }) };
+  return {
+    op: () => op, k: () => kf,
+    empezar() { if (FR.length) { activo = true; const t0 = performance.now(); const sube = () => { kf = Math.min(1, (performance.now() - t0) / 6000); if (kf < 1) requestAnimationFrame(sube); }; sube();
+      Promise.race([document.fonts.load('700 70px Montserrat'), new Promise(r => setTimeout(r, 2500))]).then(() => setTimeout(() => { if (fase === 'off') nueva(); }, 5000)); } },
+    paso(_dt, t) { if (!activo) return; const ahora = performance.now(), dt = Math.min(0.25, (ahora - (this.tw || ahora)) / 1000); this.tw = ahora; mat.uniforms.uT.value = t; const tap = tapado();
+      op += ((tap || fase === 'off' ? 0 : 1) - op) * Math.min(1, dt * (tap ? 6 : 3)); mat.uniforms.uOp.value = op; pts.visible = op > 0.01;
+      sombra.material.opacity = op * 0.8 * (fase === 'out' ? Math.max(0, 1 - tf / OUT) : fase === 'in' ? Math.min(1, tf / IN) : 1);
+      const b = (t % BEAT) / BEAT; mat.uniforms.uPulse.value = fase === 'hold' ? Math.exp(-b * 6) : 0;
+      if (fase === 'off' || (tap && fase === 'hold')) return;            // con un panel encima, la frase espera
+      tf += dt;
+      if (fase === 'in' || fase === 'out') { const k = ease(Math.min(1, tf / (fase === 'in' ? IN : OUT)));
+        for (let i = 0; i < N * 3; i++) pos[i] = from[i] + (to[i] - from[i]) * k; geo.attributes.position.needsUpdate = true;
+        if (k >= 1) { if (fase === 'in') { fase = 'hold'; tf = 0; } else nueva(); } }
+      else if (fase === 'hold') { for (let i = 0; i < N; i++) { pos[i * 3 + 2] = -D + Math.sin(t * 2 + seed[i] * 30) * 0.08; } geo.attributes.position.needsUpdate = true;
+        if (tf > HOLD) dispersar(); } }
+  };
+})();
+
 /* ---------- Entrada ---------- */
 let empezado = false, t0 = 0;
 function entrar(conMusica) {
@@ -1255,7 +1335,7 @@ function entrar(conMusica) {
   $('intro').classList.add('fuera');
   $('titulo').classList.add('ver'); $('progreso').classList.add('ver'); $('codigo').classList.add('ver');
   setTimeout(() => $('nombreCard').classList.add('ver'), 900); setTimeout(() => $('nombreCard').classList.remove('ver'), 5600);
-  reloj.start(); animar();
+  reloj.start(); animar(); CON?.empezar();
   if (bloqueada) { $('avisoTexto').textContent = `Primero encuentre la galaxia #${progreso + 1} 💫 Esta la espera un poquito más adelante.`;
     if (QUIZ && CONFIG.clave99) {
       $('avisoTexto').textContent = 'Las galaxias se encuentran en orden 💫 Primero tiene que encontrar las anteriores, una por una.';
@@ -1322,10 +1402,10 @@ function animar() {
   U.uBurst.value = b; U.uMorph.value = m;
   if (corazon) { corazon.scale.setScalar(1 + lat * 1.3); corazon.rotation.y = Math.sin(t * 0.5) * 0.3; corazon.material.uniforms.uOpacity.value = 0.75 * (1 - m); }
   polvo.material.uniforms.uOpacity.value = 0.5 * (1 - m);
-  bloom.strength = BLOOM + lat * 1.2 + m * 0.3;
+  bloom.strength = (BLOOM * 0.8 + lat * 0.8 + m * 0.3) * (CON ? 1 - 0.55 * CON.op() : 1);
   for (const s of subiendo) { s.position.y += s.userData.v * dt; s.position.x += Math.sin(t + s.userData.f) * dt * 0.3; if (s.position.y > 20) s.position.y = -10;
     const y = s.position.y; s.material.opacity = Math.min(1, (y + 10) / 4) * Math.min(1, (20 - y) / 5) * 0.8 * (1 - m * 0.5); }
-  for (const s of frases) { s.position.y = s.userData.y0 + Math.sin(t * 0.8 + s.userData.f) * 0.35; s.material.opacity = 0.85 * (1 - m); }
+  for (const s of frases) { s.position.y = s.userData.y0 + Math.sin(t * 0.8 + s.userData.f) * 0.35; s.material.opacity = 0.6 * (1 - m) * (CON ? 1 - CON.k() : 1); s.visible = s.material.opacity > 0.01; }
   for (const s of clicables) { s.position.y = s.userData.y0 + Math.sin(t * 1.3 + s.userData.f) * 0.4; s.material.opacity = 1 - m; s.visible = m < 0.95;
     if (s.userData.sobre) { const k = 1 + Math.sin(t * 3 + s.userData.f) * 0.06; s.scale.set(2.4 * k, 1.875 * k, 1); } }
   if (FUGACES && t > siguienteFugaz) { lanzarFugaz(); siguienteFugaz = t + mr(0.3, 2) / FUGACES; }
@@ -1338,6 +1418,7 @@ function animar() {
     if (u.vida > u.max) { scene.remove(s); s.material.dispose(); rafagas.splice(i, 1); continue; }
     u.v.multiplyScalar(1 - dt * 1.5); u.v.y += dt * 1.2; s.position.addScaledVector(u.v, dt); const k = u.vida / u.max; s.material.opacity = 1 - k * k; }
   if (!camLibre) camPath(t); else controls.update();
+  CON?.paso(dt, t);
   composer.render();
 }
 // Para capturas automáticas: ?captura=1&t=SEG salta la intro
