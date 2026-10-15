@@ -1478,10 +1478,16 @@ const F100 = (() => {
   let nNo100 = 0;
   function escapa(e) { if (e) { e.preventDefault(); e.stopPropagation(); } const b = $('fNo'), si = $('fSi').getBoundingClientRect();
     if (!b.classList.contains('huye')) { const r = b.getBoundingClientRect(); b.classList.add('huye'); b.style.left = r.left + 'px'; b.style.top = r.top + 'px'; document.body.appendChild(b); }
-    const w = b.offsetWidth, hh = b.offsetHeight; let x, y, k = 0;
-    do { x = mr(10, innerWidth - w - 10); y = mr(70, Math.max(80, innerHeight - hh - 200)); k++; } while (k < 20 && x < si.right + 10 && x + w > si.left - 10 && y < si.bottom + 10 && y + hh > si.top - 10);
-    requestAnimationFrame(() => { b.style.left = x + 'px'; b.style.top = y + 'px'; });
-    b.textContent = CONFIG.textosNo[nNo100++ % CONFIG.textosNo.length]; $('fSi').style.transform = `scale(${Math.min(1.8, 1 + nNo100 * 0.13)})`; }
+    b.textContent = CONFIG.textosNo[nNo100++ % CONFIG.textosNo.length]; const esc = Math.min(1.8, 1 + nNo100 * 0.13); $('fSi').style.transform = `scale(${esc})`;
+    const sr = $('fSi').getBoundingClientRect(), scx = (sr.left + sr.right) / 2, scy = (sr.top + sr.bottom) / 2, sw = $('fSi').offsetWidth * esc / 2, sh = $('fSi').offsetHeight * esc / 2;
+    const w = b.offsetWidth, hh = b.offsetHeight, M = 10;   // solo en zonas vacías: nunca sobre el texto, los ositos, la pregunta, el Sí ni el reproductor
+    const prohibidas = ['fSaludo', 'fTexto', 'fPregunta', 'reproductor', 'fTitulo'].map(id => $(id).getBoundingClientRect()).concat([document.querySelector('#fCarta .dibujo').getBoundingClientRect(), { left: scx - sw, right: scx + sw, top: scy - sh, bottom: scy + sh, width: 1 }]);
+    const libre = (x, y) => x >= M && y >= M && x + w <= innerWidth - M && y + hh <= innerHeight - M && prohibidas.every(r => r.width === 0 || x > r.right + M || x + w < r.left - M || y > r.bottom + M || y + hh < r.top - M);
+    const ant = b.getBoundingClientRect(); let x, y, k = 0, ok = false;
+    while (k++ < 120 && !ok) { x = mr(M, innerWidth - w - M); y = mr(M, innerHeight - hh - M); ok = libre(x, y) && Math.hypot(x - ant.left, y - ant.top) > 60; }
+    if (!ok) for (let yy = M; yy < innerHeight - hh && !ok; yy += 12) for (let xx = M; xx < innerWidth - w && !ok; xx += 12) if (libre(xx, yy)) { x = xx; y = yy; ok = true; }
+    if (!ok) { x = ant.left; y = ant.top; }
+    requestAnimationFrame(() => { b.style.left = x + 'px'; b.style.top = y + 'px'; }); }
   ['pointerenter', 'pointerdown', 'touchstart', 'click'].forEach(ev => $('fNo').addEventListener(ev, escapa, { passive: false }));
   // Sí → confeti y corazones
   function confeti() { const c = $('fConfeti'), x = c.getContext('2d'), dpr = Math.min(2, devicePixelRatio || 1); c.width = innerWidth * dpr; c.height = innerHeight * dpr; c.style.display = 'block';
